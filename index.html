@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1% Kid Foundation — Summer 2026</title>
+  <meta name="description" content="A sports, literacy & mindset camp for the next generation of leaders — on and off the field. Free. Summer 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0A0F0D;
+      color: #F2EFE4;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    ::selection { background: #D4FF3A; color: #0A0F0D; }
+    a { color: inherit; }
+
+    /* ─── CSS VARIABLES ─── */
+    :root {
+      --bg: #0A0F0D;
+      --bg-light: #111916;
+      --ink: #F2EFE4;
+      --accent: #D4FF3A;
+      --accent2: #FF5B1F;
+      --muted: #6B7B73;
+      --line: rgba(242,239,228,0.1);
+      --card: rgba(242,239,228,0.03);
+      --serif: 'Instrument Serif', serif;
+      --mono: 'JetBrains Mono', monospace;
+      --display: 'Bricolage Grotesque', sans-serif;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    @keyframes scrollPulse { 0%,100%{opacity:0.5;transform:scaleY(1)} 50%{opacity:0.15;transform:scaleY(0.6)} }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── REVEAL ON SCROLL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.8s cubic-bezier(0.2,0.8,0.2,1), transform 0.8s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+
+    /* ─── GRAIN OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.3;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      padding: 0 clamp(20px,4vw,60px);
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: all 0.4s ease;
+    }
+    nav.scrolled {
+      background: rgba(10,15,13,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10; text-decoration: none;
+    }
+    .nav-logo-1 {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 36px;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .nav-logo-2 {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex; gap: 32px; align-items: center;
+    }
+    .nav-link {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-link:hover { color: var(--accent); }
+    .nav-cta {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      background: var(--accent);
+      color: var(--bg);
+      padding: 10px 20px;
+      border-radius: 999px;
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { background: var(--ink); }
+    .nav-mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .hamburger { width: 24px; display: flex; flex-direction: column; gap: 5px; }
+    .hamburger span { height: 2px; background: var(--ink); border-radius: 1px; transition: all 0.3s; display: block; }
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0; top: 72px;
+      background: rgba(10,15,13,0.97);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center; justify-content: center; gap: 40px;
+      z-index: 49;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    @media(max-width:768px) {
+      .nav-links { display: none; }
+      .nav-mobile-btn { display: block; }
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px clamp(24px,6vw,80px) 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-blob-1 {
+      position: absolute; top: -20%; right: -10%;
+      width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(212,255,58,0.07), transparent 65%);
+      pointer-events: none;
+    }
+    .hero-blob-2 {
+      position: absolute; bottom: -30%; left: -20%;
+      width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(255,91,31,0.06), transparent 60%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      display: flex; align-items: center; gap: 10;
+      animation: fadeUp 1.2s cubic-bezier(0.2,0.8,0.2,1) 0.1s both;
+    }
+    .hero-dot {
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    .hero-h1 {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(52px,10vw,130px);
+      line-height: 0.88;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      max-width: 900px;
+    }
+    .hero-h1 .line1 { display: block; animation: fadeUp 0.9s cubic-bezier(0.2,0.8,0.2,1) 0.2s both; }
+    .hero-h1 .line2 { display: block; color: var(--accent); animation: fadeUp 0.9s cubic-bezier(0.2,0.8,0.2,1) 0.35s both; }
+    .hero-h1 .line3 {
+      display: block;
+      font-family: var(--serif); font-style: italic; font-weight: 400;
+      text-transform: none; letter-spacing: -0.02em;
+      animation: fadeUp 0.9s cubic-bezier(0.2,0.8,0.2,1) 0.5s both;
+    }
+    .hero-bottom {
+      display: flex; gap: clamp(24px,4vw,60px); margin-top: 56px;
+      flex-wrap: wrap; align-items: flex-end;
+      animation: fadeUp 1s cubic-bezier(0.2,0.8,0.2,1) 0.7s both;
+    }
+    .hero-desc {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(18px,2.2vw,24px); line-height: 1.45;
+      color: rgba(242,239,228,0.75); max-width: 420px;
+    }
+    .hero-desc em { color: var(--accent2); font-style: italic; }
+    .hero-stats { display: flex; gap: 40px; }
+    .hero-stat { display: flex; flex-direction: column; gap: 4; }
+    .hero-stat-label {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase;
+    }
+    .hero-stat-value {
+      font-family: var(--display); font-weight: 700;
+      font-size: 22px; letter-spacing: -0.02em; color: var(--accent);
+    }
+    .scroll-indicator {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8;
+      animation: fadeUp 1.5s ease 1.2s both;
+      opacity: 0.5;
+    }
+    .scroll-label {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    /* ─── SECTIONS SHARED ─── */
+    section { border-top: 1px solid var(--line); }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.25em; color: var(--accent);
+      text-transform: uppercase; margin-bottom: 24px;
+    }
+    .section-eyebrow.orange { color: var(--accent2); }
+    .section-h2 {
+      font-family: var(--display); font-weight: 800;
+      font-size: clamp(36px,5vw,60px);
+      line-height: 0.92; letter-spacing: -0.035em; text-transform: uppercase;
+    }
+    .italic-word {
+      font-family: var(--serif); font-style: italic;
+      font-weight: 400; text-transform: none;
+    }
+
+    /* ─── MISSION ─── */
+    #mission { padding: 120px clamp(24px,6vw,80px); }
+    .mission-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(40px,6vw,100px); align-items: start;
+    }
+    .mission-body {
+      font-family: var(--display); font-weight: 300;
+      font-size: 17px; line-height: 1.7;
+      color: rgba(242,239,228,0.7); margin-bottom: 28px; padding-top: 20px;
+    }
+    .mission-stats { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 36px; }
+    .mission-stat {
+      padding: 20px 28px;
+      border: 1px solid var(--line); border-radius: 14px;
+      display: flex; flex-direction: column; gap: 4; min-width: 120px;
+    }
+    .mission-stat-num {
+      font-family: var(--display); font-weight: 700;
+      font-size: 28px; color: var(--accent); letter-spacing: -0.02em;
+    }
+    .mission-stat-label {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+    }
+    @media(max-width:768px) { .mission-grid { grid-template-columns: 1fr; } }
+
+    /* ─── SCHEDULE ─── */
+    #schedule { padding: 120px clamp(24px,6vw,80px); }
+    .schedule-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 56px; flex-wrap: wrap; gap: 20;
+    }
+    .schedule-duration {
+      font-family: var(--display); font-weight: 700;
+      font-size: 36px; color: var(--accent); letter-spacing: -0.02em;
+    }
+    .sessions { display: flex; flex-direction: column; gap: 14px; }
+    .session-card {
+      position: relative;
+      border: 1px solid var(--line); border-radius: 20px;
+      padding: clamp(24px,3vw,36px);
+      background: var(--card);
+      display: grid; grid-template-columns: auto 1fr auto;
+      gap: clamp(16px,2.5vw,32px); align-items: center;
+      cursor: default; overflow: hidden;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    .session-card:hover { background: rgba(242,239,228,0.04); }
+    .session-card.featured {
+      background: linear-gradient(135deg, rgba(212,255,58,0.06), rgba(255,91,31,0.04));
+    }
+    .session-accent-bar {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 20px 0 0 20px;
+      transform: scaleY(0); transform-origin: top;
+      transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    .session-card:hover .session-accent-bar { transform: scaleY(1); }
+    .session-num {
+      font-family: var(--serif); font-style: italic;
+      font-size: 64px; line-height: 0.8; color: var(--muted);
+      letter-spacing: -0.04em; min-width: 70px;
+      transition: color 0.4s;
+    }
+    .session-card.featured .session-num { font-size: 80px; }
+    .session-card:hover .session-num.yellow { color: var(--accent); }
+    .session-card:hover .session-num.orange { color: var(--accent2); }
+    .session-title {
+      font-family: var(--display); font-weight: 700;
+      font-size: clamp(20px,2.4vw,26px);
+      letter-spacing: -0.02em; text-transform: uppercase;
+      line-height: 1; margin-bottom: 10px;
+    }
+    .session-card.featured .session-title { font-size: clamp(22px,2.8vw,30px); }
+    .session-desc {
+      font-family: var(--display); font-weight: 300;
+      font-size: 15px; line-height: 1.55;
+      color: rgba(242,239,228,0.65); max-width: 500px;
+    }
+    .session-mentors { display: flex; gap: 10px; margin-top: 14px; align-items: center; }
+    .mentor-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg,#2a4036,#1a2620);
+      border: 1px solid rgba(212,255,58,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--accent);
+    }
+    .mentor-name {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase;
+    }
+    .session-readings {
+      font-family: var(--serif); font-style: italic;
+      font-size: 15px; color: var(--ink); margin-top: 10px; line-height: 1.5;
+    }
+    .session-time {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 8px 16px; border-radius: 999px;
+      white-space: nowrap; align-self: flex-start;
+    }
+    @media(max-width:640px) {
+      .session-card { grid-template-columns: 1fr; gap: 12px; }
+      .session-time { justify-self: start; }
+    }
+
+    /* ─── MENTORS ─── */
+    #mentors { padding: 120px clamp(24px,6vw,80px); }
+    .mentors-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .mentor-card {
+      border: 1px solid var(--line); border-radius: 20px;
+      padding: 32px; background: var(--card);
+      transition: all 0.4s ease; position: relative; overflow: hidden;
+    }
+    .mentor-card:hover { border-color: rgba(212,255,58,0.25); background: rgba(242,239,228,0.04); }
+    .mentor-avatar-lg {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, #111916, #0A0F0D);
+      border: 2px solid rgba(212,255,58,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--display); font-weight: 800; font-size: 28px; color: var(--accent);
+      margin-bottom: 20px; transition: border-color 0.4s;
+    }
+    .mentor-card:hover .mentor-avatar-lg { border-color: var(--accent); }
+    .mentor-card-name {
+      font-family: var(--display); font-weight: 700;
+      font-size: 24px; letter-spacing: -0.02em; margin-bottom: 4px;
+    }
+    .mentor-card-role {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.15em; color: var(--accent2);
+      text-transform: uppercase; margin-bottom: 14px;
+    }
+    .mentor-card-desc {
+      font-family: var(--display); font-weight: 300;
+      font-size: 15px; line-height: 1.55;
+      color: rgba(242,239,228,0.6);
+    }
+
+    /* ─── REGISTER CTA ─── */
+    #register {
+      padding: 120px clamp(24px,6vw,80px);
+      position: relative; overflow: hidden;
+    }
+    .register-blob {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 80vw; height: 80vw;
+      background: radial-gradient(circle, rgba(212,255,58,0.06), transparent 50%);
+      pointer-events: none;
+    }
+    .register-inner {
+      max-width: 700px; margin: 0 auto;
+      text-align: center; position: relative;
+    }
+    .register-big {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(80px,14vw,160px);
+      color: var(--accent); line-height: 0.8;
+      letter-spacing: -0.04em; margin-bottom: 24px;
+    }
+    .register-h2 {
+      font-family: var(--display); font-weight: 800;
+      font-size: clamp(32px,5vw,52px);
+      line-height: 0.92; letter-spacing: -0.03em;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .register-h2 span { color: var(--accent); }
+    .register-p {
+      font-family: var(--display); font-weight: 300;
+      font-size: 17px; line-height: 1.6;
+      color: rgba(242,239,228,0.65);
+      max-width: 480px; margin: 0 auto 40px;
+    }
+    .register-btn {
+      display: inline-flex; align-items: center; gap: 10;
+      font-family: var(--display); font-weight: 700;
+      font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase;
+      text-decoration: none; background: var(--accent); color: var(--bg);
+      padding: 18px 40px; border-radius: 999px; transition: all 0.3s;
+    }
+    .register-btn:hover { background: var(--ink); transform: translateY(-2px); }
+    .register-meta {
+      display: flex; justify-content: center; gap: 40px;
+      margin-top: 48px; flex-wrap: wrap;
+    }
+    .register-meta-item { display: flex; flex-direction: column; gap: 4; align-items: center; }
+    .register-meta-label {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase;
+    }
+    .register-meta-value {
+      font-family: var(--display); font-weight: 700;
+      font-size: 20px; letter-spacing: -0.02em;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 48px clamp(24px,6vw,80px);
+      border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 20;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 10; text-decoration: none; }
+    .footer-logo-1 {
+      font-family: var(--serif); font-style: italic;
+      font-size: 28px; color: var(--accent);
+    }
+    .footer-logo-2 {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase;
+    }
+    .footer-socials { display: flex; gap: 28px; }
+    .footer-social {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.15em; color: var(--muted);
+      text-decoration: none; text-transform: uppercase; transition: color 0.3s;
+    }
+    .footer-social:hover { color: var(--ink); }
+    .footer-copy {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.15em; color: rgba(242,239,228,0.25); text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav id="nav">
+    <a href="#hero" class="nav-logo">
+      <span class="nav-logo-1">1%</span>
+      <span class="nav-logo-2">Kid Foundation</span>
+    </a>
+    <div class="nav-links">
+      <a href="#mission"  class="nav-link">Mission</a>
+      <a href="#schedule" class="nav-link">Schedule</a>
+      <a href="#mentors"  class="nav-link">Mentors</a>
+      <a href="#register" class="nav-link">Register</a>
+      <a href="#register" class="nav-cta">Join Camp →</a>
+    </div>
+    <button class="nav-mobile-btn" id="menuBtn" aria-label="Toggle menu">
+      <div class="hamburger">
+        <span id="h1"></span>
+        <span id="h2"></span>
+        <span id="h3"></span>
+      </div>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#mission"  onclick="closeMobile()">Mission</a>
+    <a href="#schedule" onclick="closeMobile()">Schedule</a>
+    <a href="#mentors"  onclick="closeMobile()">Mentors</a>
+    <a href="#register" onclick="closeMobile()">Register</a>
+  </div>
+
+  <!-- ─── HERO ─── -->
+  <section id="hero">
+    <div class="hero-blob-1"></div>
+    <div class="hero-blob-2"></div>
+
+    <div class="hero-eyebrow">
+      <span class="hero-dot"></span>
+      Summer 2026 · Location TBD
+    </div>
+
+    <h1 class="hero-h1">
+      <span class="line1">Build the</span>
+      <span class="line2">Athlete.</span>
+      <span class="line3">Build the mind.</span>
+    </h1>
+
+    <div class="hero-bottom">
+      <p class="hero-desc">
+        A sports, literacy &amp; mindset camp for the <em>next generation</em> of leaders — on and off the field.
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-label">Duration</span>
+          <span class="hero-stat-value">2—2.5 hrs</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">Ages</span>
+          <span class="hero-stat-value">8—16</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">Cost</span>
+          <span class="hero-stat-value">Free</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span class="scroll-label">Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── MISSION ─── -->
+  <section id="mission">
+    <div class="section-inner">
+      <div class="mission-grid">
+        <div class="reveal">
+          <div class="section-eyebrow">01 — Our Mission</div>
+          <h2 class="section-h2">
+            Every kid<br />deserves a <span class="italic-word">shot.</span>
+          </h2>
+        </div>
+        <div class="reveal reveal-d1">
+          <p class="mission-body">
+            The 1% Kid Foundation gives young athletes the mentorship, literacy tools, and competitive sports training
+            that used to be reserved for the few. We believe the next generation of leaders is built at the intersection
+            of mind and body — where reading builds vision and sport builds discipline.
+          </p>
+          <p class="mission-body" style="padding-top:0">
+            Our camps combine inspirational mentorship from D1 athletes and entrepreneurs with hands-on
+            football and soccer training, financial literacy workshops, and competitive gameplay. No cost.
+            No barriers. Just opportunity.
+          </p>
+          <div class="mission-stats">
+            <div class="mission-stat">
+              <span class="mission-stat-num">500+</span>
+              <span class="mission-stat-label">Kids served</span>
+            </div>
+            <div class="mission-stat">
+              <span class="mission-stat-num">3</span>
+              <span class="mission-stat-label">Mentors</span>
+            </div>
+            <div class="mission-stat">
+              <span class="mission-stat-num">0</span>
+              <span class="mission-stat-label">Cost to attend</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SCHEDULE ─── -->
+  <section id="schedule">
+    <div class="section-inner">
+      <div class="reveal schedule-header">
+        <div>
+          <div class="section-eyebrow">02 — Camp Schedule</div>
+          <h2 class="section-h2">The <span class="italic-word">lineup.</span></h2>
+        </div>
+        <div class="schedule-duration">2—2.5 hrs</div>
+      </div>
+
+      <div class="sessions">
+
+        <!-- Session 01 -->
+        <div class="session-card reveal">
+          <div class="session-accent-bar" style="background:#D4FF3A"></div>
+          <div class="session-num yellow">01</div>
+          <div>
+            <div class="session-title">Inspirational Stories</div>
+            <div class="session-desc">Personal stories from mentors who've lived it — athletes, builders, and leaders sharing the road to the top 1%.</div>
+            <div class="session-mentors">
+              <div style="display:flex;align-items:center;gap:7px">
+                <div class="mentor-avatar">C</div>
+                <span class="mentor-name">Channing</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:7px">
+                <div class="mentor-avatar">J</div>
+                <span class="mentor-name">Julio</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:7px">
+                <div class="mentor-avatar">T</div>
+                <span class="mentor-name">Tuck</span>
+              </div>
+            </div>
+          </div>
+          <div class="session-time" style="color:#D4FF3A;border:1px solid rgba(212,255,58,0.3)">10—15 min</div>
+        </div>
+
+        <!-- Session 02 -->
+        <div class="session-card reveal reveal-d1">
+          <div class="session-accent-bar" style="background:#FF5B1F"></div>
+          <div class="session-num orange">02</div>
+          <div>
+            <div class="session-title">Literacy &amp; Mindset Boost</div>
+            <div class="session-desc">Reading, financial literacy, and the mental game. Unpacking what nobody taught us in school.</div>
+            <div class="session-readings">"The 1% Kid" · "Things I Wish I Knew" · "What to Do With Money"</div>
+          </div>
+          <div class="session-time" style="color:#FF5B1F;border:1px solid rgba(255,91,31,0.3)">30 min</div>
+        </div>
+
+        <!-- Session 03 -->
+        <div class="session-card reveal reveal-d1">
+          <div class="session-accent-bar" style="background:#D4FF3A"></div>
+          <div class="session-num yellow">03</div>
+          <div>
+            <div class="session-title">Warm Up &amp; Expectations</div>
+            <div class="session-desc">Loosen up, lock in. Set the tone, set the standard — ready to learn, ready to play.</div>
+          </div>
+          <div class="session-time" style="color:#D4FF3A;border:1px solid rgba(212,255,58,0.3)">15 min</div>
+        </div>
+
+        <!-- Session 04 -->
+        <div class="session-card reveal reveal-d2">
+          <div class="session-accent-bar" style="background:#FF5B1F"></div>
+          <div class="session-num orange">04</div>
+          <div>
+            <div class="session-title">Soccer &amp; Football Basics</div>
+            <div class="session-desc">Core skills, real drills. Footwork, ball control, route running, tackling fundamentals — coached with precision.</div>
+          </div>
+          <div class="session-time" style="color:#FF5B1F;border:1px solid rgba(255,91,31,0.3)">30 min</div>
+        </div>
+
+        <!-- Session 05 (featured) -->
+        <div class="session-card featured reveal reveal-d2">
+          <div class="session-accent-bar" style="background:#D4FF3A"></div>
+          <div class="session-num yellow" style="font-size:80px">05</div>
+          <div>
+            <div class="session-title" style="font-size:clamp(22px,2.8vw,30px)">Game Play</div>
+            <div class="session-desc">Put skills to the test. Small-sided soccer (3v3), 7-on-7 football, and tag football — full energy, full send.</div>
+          </div>
+          <div class="session-time" style="color:#D4FF3A;border:1px solid rgba(212,255,58,0.3)">30+ min</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MENTORS ─── -->
+  <section id="mentors">
+    <div class="section-inner">
+      <div class="reveal">
+        <div class="section-eyebrow orange">03 — Your Mentors</div>
+        <h2 class="section-h2" style="margin-bottom:56px">
+          Led by <span class="italic-word">those who've done it.</span>
+        </h2>
+      </div>
+      <div class="mentors-grid">
+        <div class="mentor-card reveal">
+          <div class="mentor-avatar-lg">C</div>
+          <div class="mentor-card-name">Channing</div>
+          <div class="mentor-card-role">Athlete · Mentor</div>
+          <div class="mentor-card-desc">Bringing the energy, the experience, and the blueprint for young athletes to find their path.</div>
+        </div>
+        <div class="mentor-card reveal reveal-d1">
+          <div class="mentor-avatar-lg">J</div>
+          <div class="mentor-card-name">Julio</div>
+          <div class="mentor-card-role">D1 Football · Entrepreneur</div>
+          <div class="mentor-card-desc">Former D1 player turned business builder. Living proof that the 1% mindset extends beyond the field.</div>
+        </div>
+        <div class="mentor-card reveal reveal-d2">
+          <div class="mentor-avatar-lg">T</div>
+          <div class="mentor-card-name">Tuck</div>
+          <div class="mentor-card-role">Athlete · Leader</div>
+          <div class="mentor-card-desc">Dedicated to showing the next generation what discipline and preparation look like up close.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── REGISTER ─── -->
+  <section id="register">
+    <div class="register-blob"></div>
+    <div class="register-inner reveal">
+      <div class="register-big">1%</div>
+      <h2 class="register-h2">
+        Ready to build<br />your kid's <span>edge?</span>
+      </h2>
+      <p class="register-p">
+        Spots are limited. Register for Summer 2026 and give your child the mentorship, skills, and
+        competitive training that builds champions.
+      </p>
+      <!--
+        EDIT THIS: Replace href="#" with your registration form link
+        e.g. a Google Form, Typeform, Jotform, etc.
+      -->
+      <a href="#" class="register-btn">Register for Camp →</a>
+      <div class="register-meta">
+        <div class="register-meta-item">
+          <span class="register-meta-label">Dates</span>
+          <span class="register-meta-value">Summer '26</span>
+        </div>
+        <div class="register-meta-item">
+          <span class="register-meta-label">Location</span>
+          <span class="register-meta-value">TBD</span>
+        </div>
+        <div class="register-meta-item">
+          <span class="register-meta-label">Cost</span>
+          <span class="register-meta-value">Free</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <a href="#hero" class="footer-logo">
+      <span class="footer-logo-1">1%</span>
+      <span class="footer-logo-2">Kid Foundation</span>
+    </a>
+    <div class="footer-socials">
+      <!-- EDIT: Replace # with your real social links -->
+      <a href="#" class="footer-social">IG</a>
+      <a href="#" class="footer-social">TikTok</a>
+      <a href="#" class="footer-social">X</a>
+    </div>
+    <div class="footer-copy">© 2026 The 1% Kid Foundation</div>
+  </footer>
+
+  <!-- ─── JS ─── -->
+  <script>
+    // ── Nav scroll effect ──
+    const navEl = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      navEl.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ── Mobile menu ──
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const h1 = document.getElementById('h1');
+    const h2 = document.getElementById('h2');
+    const h3 = document.getElementById('h3');
+    let open = false;
+
+    menuBtn.addEventListener('click', () => {
+      open = !open;
+      mobileMenu.classList.toggle('open', open);
+      h1.style.transform = open ? 'rotate(45deg) translateY(7px)' : '';
+      h2.style.opacity   = open ? '0' : '1';
+      h3.style.transform = open ? 'rotate(-45deg) translateY(-7px)' : '';
+    });
+
+    function closeMobile() {
+      open = false;
+      mobileMenu.classList.remove('open');
+      h1.style.transform = '';
+      h2.style.opacity = '1';
+      h3.style.transform = '';
+    }
+
+    // ── Scroll reveal ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
